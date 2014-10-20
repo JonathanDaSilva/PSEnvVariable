@@ -7,6 +7,7 @@ function Set-Env
     [String]$value = ""
   )
 
+  $value = Resolve-Path $value
   $path = $("Env:\"+$name)
   if(-not $(Test-Path $path)) {
     Set-Content $path $value
@@ -39,6 +40,7 @@ function Add-Path
     [Parameter(Mandatory=$False,Position=1)]
     [Object]$dir = $(Get-Location)
   )
+  $dir = Resolve-Path $dir
   if(-not (Test-InPath $dir)) {
     $env:Path += ";$($dir)"
     [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
