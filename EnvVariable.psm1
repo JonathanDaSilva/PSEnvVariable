@@ -13,7 +13,7 @@ function Set-Env
     Set-Content $path $value
     [Environment]::SetEnvironmentVariable($name, $value, [System.EnvironmentVariableTarget]::Machine)
 
-    Write-Warning "$($path) = $($value)"
+    Write-Verbose "$($path) = $($value)"
   }
 }
 
@@ -25,7 +25,7 @@ function Remove-Env
   )
   $path = "Env:\"+$name
   if(-not $(Test-Path $path)) {
-    Write-Host "$($path) :: Doesn't exist" -ForegroundColor "red"
+    Write-Verbose "$($path) :: Doesn't exist"
   } else {
     Remove-Item $path -Force
   }
@@ -42,9 +42,9 @@ function Add-Path
   if(-not (Test-InPath $dir)) {
     $env:Path += ";$($dir)"
     [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
-    Write-Host "$($dir) :: Added to Path" -ForegroundColor "green"
+    Write-Verbose "$($dir) :: Added to Path"
   } else {
-    Write-Host "$($dir) :: Already in Path" -ForegroundColor "red"
+    Write-Verbose "$($dir) :: Already in Path"
   }
 }
 
@@ -58,9 +58,9 @@ function Remove-Path
     $env:Path = $env:Path.replace($dir, '')
     $env:Path = $env:Path.replace(';;', ';')
     [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
-    Write-Host "$($dir) :: Deleted for the path" -ForegroundColor "green"
+    Write-Verbose "$($dir) :: Deleted for the path"
   } else {
-    Write-Host "$($dir) :: Is not in the path" -ForegroundColor "red"
+    Write-Verbose "$($dir) :: Is not in the path"
   }
 }
 
