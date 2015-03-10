@@ -6,17 +6,15 @@ function Set-Env
     [Parameter(Mandatory=$True,Position=2)]
     [String]$value = ""
   )
+  process {
+    $result = Resolve-Path $value -ErrorAction Ignore
+    $path   = $("Env:\"+$name)
 
-  $value = Resolve-Path $value
-  $path = $("Env:\"+$name)
-  if(-not $(Test-Path $path)) {
     Set-Content $path $value
-  } else {
-    Set-Content $path $value
+    [Environment]::SetEnvironmentVariable($name, $value, [System.EnvironmentVariableTarget]::Machine)
+
+    Write-Warning "$($path) = $($value)"
   }
-  [Environment]::SetEnvironmentVariable($name, $value, [System.EnvironmentVariableTarget]::Machine)
-
-  Write-Host "$($path) = $($value)" -ForegroundColor "green"
 }
 
 function Remove-Env
@@ -66,6 +64,11 @@ function Remove-Path
   }
 }
 
+function Update-Path
+{
+  $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+}
+
 function Test-InPath
 {
   param(
@@ -83,5 +86,6 @@ function Test-InPath
 Export-ModuleMember Set-Env
 Export-ModuleMember Remove-Env
 Export-ModuleMember Add-Path
+Export-ModuleMember Update-Path
 Export-ModuleMember Remove-Path
 Export-ModuleMember Test-InPath
