@@ -7,11 +7,12 @@ function Set-Env
     [String]$value = ""
   )
   process {
-    $result = Resolve-Path $value -ErrorAction Ignore
     $path   = $("Env:\"+$name)
 
-    Set-Content $path $value
-    [Environment]::SetEnvironmentVariable($name, $value, "Machine")
+    if(-not $(Test-Path $path) -or -not $( $(Get-Content $path) -eq $value )) {
+      Set-Content $path $value
+      [Environment]::SetEnvironmentVariable($name, $value, "Machine")
+    }
 
     Write-Verbose "$($path) = $($value)"
   }
